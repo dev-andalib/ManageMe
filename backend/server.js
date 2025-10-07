@@ -3,28 +3,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-
 const app = express();
-
-
 
 // middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-
-
-
 // routes
 app.use('/api/auth', require('./routes/auth'));
 app.get('/', (req, res) => res.send('API running'));
 
-
-
-
 // connect + start
-mongoose
-  .connect(process.env.MONGO_URI) // no deprecated options needed
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected!');
     const port = process.env.PORT || 5000;
