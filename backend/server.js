@@ -1,21 +1,36 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
+
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// MongoDB Connection
-mongoose.connect('mongodb+srv://Andalib:Nu9WS7hng5L67WQI@cluster0.ld0ehs8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-})
-.then(() => console.log('MongoDB connected!'))
-.catch(err => console.log('MongoDB connection error:', err));
 
-// Sample route
-app.get('/', (req, res) => {
-    res.send('Hello from Express!');
-});
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// middleware
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
+
+
+
+
+// routes
+app.use('/api/auth', require('./routes/auth'));
+app.get('/', (req, res) => res.send('API running'));
+
+
+
+
+// connect + start
+mongoose
+  .connect(process.env.MONGO_URI) // no deprecated options needed
+  .then(() => {
+    console.log('MongoDB connected!');
+    const port = process.env.PORT || 5000;
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+  })
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
