@@ -1,7 +1,13 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Boards from './pages/Boards';
 import ProtectedRoute from './ProtectedRoute';
+import WorkspaceBoards from './pages/WorkspaceBoards';
+import BoardView from './pages/BoardView';
+import Profile from './pages/Profile';
+
+
 
 function Home() {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -20,7 +26,10 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
-        <Route path="/app" element={<ProtectedRoute><Home/></ProtectedRoute>} />
+        <Route path="/boards" element={<ProtectedRoute><Boards/></ProtectedRoute>} />
+        <Route path="/workspaces/:id" element={<ProtectedRoute><WorkspaceBoards/></ProtectedRoute>} />
+        <Route path="/boards/:id" element={<ProtectedRoute><BoardView/></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />
         <Route path="*" element={<Login/>} />
       </Routes>
     </BrowserRouter>

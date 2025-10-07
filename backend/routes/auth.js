@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-
+const Workspace = require('../models/Workspace');
 const router = express.Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const sign = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -20,7 +20,16 @@ router.post('/signup', async (req, res) => {
     if (exists) return res.status(409).json({ message: 'Email already in use' });
 
     const user = await User.create({ name, email, password }); // pre-save hook hashes
+    
+    // make default workspace "My World" for this user
+    await Workspace.create({
+      name: 'My World',
+      owner: user._id,
+     members: [{ user: user._id, role: 'editor' }]
+     });
     const token = sign(user._id.toString());
+
+
     return res.status(201).json({ user: { id: user._id, name: user.name, email: user.email }, token });
   } catch (err) {
     if (err.code === 11000) return res.status(409).json({ message: 'Email already in use' });

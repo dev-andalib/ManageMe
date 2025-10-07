@@ -11,7 +11,11 @@ app.use(express.json());
 
 // routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/workspaces', require('./routes/workspaces'));
+app.use('/api/boards', require('./routes/boards'));
 app.get('/', (req, res) => res.send('API running'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/lists', require('./routes/lists'));
 
 // connect + start
 mongoose.connect(process.env.MONGO_URI)
